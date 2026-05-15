@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yarn It! — Handmade Crochet</title>
+  <meta name="description" content="Handmade crochet bags, tops, hats and accessories by Yarn It! — Durban, South Africa.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/images/logo.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="nav-logo" href="#home" aria-label="Yarn It! With Love — home">
+      <span class="nav-logo-text">Yarn It!</span>
+      <span class="nav-logo-tag">With love</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#products">Shop</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#custom">Custom Orders</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta wa-link" data-wa-msg="Hi Yarn It! I'd love to place an order." href="#">Order on WhatsApp</a>
+    <button class="hamburger" type="button" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <span class="hero-badge hero-reveal">Handmade in Durban</span>
+      <h1 class="hero-reveal">Considered crochet for everyday wear</h1>
+      <p class="hero-lead hero-reveal">Handmade bags, tops, and accessories from our Durban studio — refined colour, careful finishing, and pieces made to order.</p>
+      <div class="hero-btns hero-reveal">
+        <a class="btn-primary btn-elegant" href="#products">Shop Collection</a>
+        <a class="btn-outline btn-elegant wa-link" data-wa-msg="Hi Yarn It! I'd love to browse your collection." href="#">Order on WhatsApp</a>
+      </div>
+      <p class="hero-trust hero-reveal">Made to order · Custom colours · Limited pieces</p>
+    </div>
+    <div class="hero-showcase" id="heroShowcase"></div>
+  </div>
+</section>
+
+<section class="categories" id="categories">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="section-tag">Browse by category</p>
+      <h2 class="section-title">What We Make</h2>
+      <p class="section-sub">Every piece is handmade to order. Choose a category to explore the collection.</p>
+    </div>
+    <div class="cat-grid fade-in reveal-stagger" id="catGrid"></div>
+  </div>
+</section>
+
+<section class="products" id="products">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="section-tag">The collection</p>
+      <h2 class="section-title">Shop Our Pieces</h2>
+      <p class="section-sub">Tap any item to order on WhatsApp. Custom colours available on request.</p>
+    </div>
+    <div class="filter-row fade-in">
+      <button type="button" class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+      <button type="button" class="filter-btn" onclick="filterProducts('bags',this)">Bags</button>
+      <button type="button" class="filter-btn" onclick="filterProducts('tops',this)">Tops</button>
+      <button type="button" class="filter-btn" onclick="filterProducts('hats',this)">Hats</button>
+      <button type="button" class="filter-btn" onclick="filterProducts('winter',this)">Winter Wear</button>
+    </div>
+    <div class="products-grid fade-in reveal-stagger" id="productsGrid"></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="container about-inner">
+    <div class="about-gallery fade-in" id="aboutGallery"></div>
+    <div class="about-text fade-in">
+      <p class="section-tag">Our story</p>
+      <h2 class="section-title">About Yarn It!</h2>
+      <p class="section-sub">A Durban crochet atelier for pieces that feel considered, wearable, and beautifully handmade.</p>
+      <p class="about-copy">Each Yarn It piece is made slowly and intentionally — from statement bags and tops to hats and winter layers — with colour, texture, and a quiet sense of luxury.</p>
+      <div class="values">
+        <div class="value-item">
+          <div class="value-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+          </div>
+          <div>
+            <h4>100% Handmade</h4>
+            <p>Every stitch is placed with care — no two pieces are exactly alike.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>
+          </div>
+          <div>
+            <h4>Custom Colours</h4>
+            <p>Want your favourite shade? Ask us — we love personal pieces.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 017-2 4 4 0 017 2c0 5.5-7 10-7 10z"/></svg>
+          </div>
+          <div>
+            <h4>Thoughtful finishing</h4>
+            <p>Every order is handled with the same care we put into the stitchwork.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="custom" id="custom">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="section-tag">Made for you</p>
+      <h2 class="section-title">Custom Orders</h2>
+      <p class="section-sub">Can't find your perfect colour or style? We will make it just for you.</p>
+    </div>
+    <div class="custom-inner">
+      <div class="fade-in">
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span><div><h4>Choose your piece</h4><p>Bag, top, hat, beanie, or scarf.</p></div></div>
+          <div class="step"><span class="step-num">2</span><div><h4>Select your colour</h4><p>Any shade you love — we source the yarn.</p></div></div>
+          <div class="step"><span class="step-num">3</span><div><h4>Confirm fit and details</h4><p>Finalise on WhatsApp with our studio.</p></div></div>
+          <div class="step"><span class="step-num">4</span><div><h4>Secure your order</h4><p>A 50% deposit reserves your piece.</p></div></div>
+          <div class="step"><span class="step-num">5</span><div><h4>Handmade with care</h4><p>Your crochet is crafted for you.</p></div></div>
+          <div class="step"><span class="step-num">6</span><div><h4>Collect or deliver</h4><p>Collection or courier — your choice.</p></div></div>
+        </div>
+        <a class="btn-primary wa-link" data-wa-msg="Hi Yarn It! I'd like to place a custom order." href="#">Start custom order on WhatsApp</a>
+      </div>
+      <form class="custom-form fade-in" novalidate onsubmit="event.preventDefault(); submitCustomOrder();">
+        <h3 class="form-title">Custom order enquiry</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customName">Your name</label>
+            <input type="text" id="customName" placeholder="e.g. Lerato" autocomplete="name">
+            <p class="form-error" id="errCustomName"></p>
+          </div>
+          <div class="form-group">
+            <label for="customPhone">Phone number</label>
+            <input type="tel" id="customPhone" placeholder="e.g. 071 234 5678" autocomplete="tel">
+            <p class="form-error" id="errCustomPhone"></p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="customProduct">Product type</label>
+          <select id="customProduct">
+            <option>Choose a product...</option>
+            <option>Crochet Bag</option>
+            <option>Crochet Top</option>
+            <option>Bucket Hat</option>
+            <option>Beanie</option>
+            <option>Scarf</option>
+            <option>Other</option>
+          </select>
+          <p class="form-error" id="errCustomProduct"></p>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customColour">Preferred colour</label>
+            <input type="text" id="customColour" placeholder="e.g. Dusty rose">
+          </div>
+          <div class="form-group">
+            <label for="customSize">Size</label>
+            <select id="customSize">
+              <option>One size</option>
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="customNotes">Extra notes</label>
+          <textarea id="customNotes" rows="3" placeholder="Tell us about your dream piece..."></textarea>
+        </div>
+        <button type="submit" class="form-submit btn-primary">Send enquiry via WhatsApp</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="social" id="social">
+  <div class="container">
+    <div class="section-head fade-in">
+      <p class="section-tag">Follow along</p>
+      <h2 class="section-title">Find Us Online</h2>
+      <p class="section-sub">New drops, custom designs, and behind-the-scenes from the studio.</p>
+    </div>
+    <div class="social-cards fade-in">
+      <a class="social-card ig" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a class="social-card tt" href="#" target="_blank" rel="noopener">TikTok</a>
+      <a class="social-card fb" href="#" target="_blank" rel="noopener">Facebook</a>
+      <a class="social-card wa wa-link" data-wa-msg="Hi Yarn It!" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="container contact-inner">
+    <div class="contact-info fade-in">
+      <p class="section-tag">Get in touch</p>
+      <h2 class="section-title">Contact Yarn It!</h2>
+      <p>Questions about an order, custom colours, or availability — we would love to hear from you.</p>
+      <div class="contact-item">
+        <span class="ci" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 01-.9 3.8 8 8 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8 8 0 014.7-7.6 8.4 8.4 0 013.8-.9h.4a8.1 8.1 0 018 7.5z"/></svg>
+        </span>
+        <span id="waDisplay">WhatsApp: +27 000 000 0000</span>
+      </div>
+      <div class="contact-item">
+        <span class="ci" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.1-6-10a6 6 0 1112 0c0 4.9-6 10-6 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
+        </span>
+        Durban, KwaZulu-Natal, South Africa
+      </div>
+      <div class="contact-item">
+        <span class="ci" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M21 8v13H3V8"/><path d="M1 8l11-5 11 5"/><rect x="6" y="12" width="4" height="5"/></svg>
+        </span>
+        Delivery &amp; collection available
+      </div>
+      <p style="margin-top:1.5rem">
+        <a class="btn-primary wa-link" data-wa-msg="Hi Yarn It!" href="#">Message on WhatsApp</a>
+      </p>
+    </div>
+    <form class="contact-form fade-in" novalidate onsubmit="event.preventDefault(); submitContactForm();">
+      <h3 class="form-title">Send an enquiry</h3>
+      <div class="form-group">
+        <label for="contactName">Name</label>
+        <input type="text" id="contactName" placeholder="Your name" autocomplete="name">
+        <p class="form-error" id="errContactName"></p>
+      </div>
+      <div class="form-group">
+        <label for="contactDetails">Email or phone</label>
+        <input type="text" id="contactDetails" placeholder="How we can reach you">
+        <p class="form-error" id="errContactDetails"></p>
+      </div>
+      <div class="form-group">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" rows="4" placeholder="What would you like to know?"></textarea>
+      </div>
+      <button type="submit" class="form-submit btn-primary">Send via WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p class="f-logo">Yarn It!</p>
+    <p class="f-tag">With love</p>
+    <p class="f-sub">Handmade crochet · Durban, South Africa</p>
+    <nav class="f-links" aria-label="Footer">
+      <a href="#products">Shop</a>
+      <a href="#about">About</a>
+      <a href="#custom">Custom Orders</a>
+      <a href="#contact">Contact</a>
+      <a href="#" class="social-footer-ig">Instagram</a>
+      <a href="#" class="social-footer-tt">TikTok</a>
+      <a href="admin.html" class="f-admin">Admin</a>
+    </nav>
+    <p class="f-copy">&copy; 2026 Yarn It! All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.env.js"></script>
+<script src="supabase-client.js"></script>
+<script src="supabase-data.js"></script>
+<script src="config.js"></script>
+<script src="store.js"></script>
+<script src="shop.js"></script>
+</body>
+</html>

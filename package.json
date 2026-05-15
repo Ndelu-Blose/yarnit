@@ -1,0 +1,12 @@
+{
+  "name": "yarnit",
+  "private": true,
+  "scripts": {
+    "supabase:env": "node scripts/write-supabase-env.js",
+    "postinstall": "node scripts/write-supabase-env.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
+    "@supabase/ssr": "^0.6.1"
+  }
+}
