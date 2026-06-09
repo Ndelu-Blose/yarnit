@@ -1,10 +1,13 @@
 /** Shared Yarn It! store — localStorage demo or Supabase when configured. */
+const CATALOGUE_VERSION = 2;
+
 const YI_KEYS = {
   products: 'yi_products',
   photos: 'yi_photos',
   wa: 'yi_wa',
   user: 'yi_user',
   pass: 'yi_pass',
+  catalogueVersion: 'yi_catalogue_version',
 };
 
 const YI_CATEGORIES = ['bags', 'tops', 'hats', 'winter', 'custom'];
@@ -152,13 +155,33 @@ function setProductsCache(products) {
   _productsCache = Array.isArray(products) ? products.map((p) => ({ ...p })) : [];
 }
 
+function migrateLocalCatalogue() {
+  if (isSupabaseMode()) return;
+  const storedVersion = parseInt(storageGet(YI_KEYS.catalogueVersion) || '0', 10);
+  if (storedVersion >= CATALOGUE_VERSION) return;
+
+  storageSet(YI_KEYS.products, JSON.stringify(DEFAULT_PRODUCTS));
+  storageSet(YI_KEYS.catalogueVersion, String(CATALOGUE_VERSION));
+  _productsCache = null;
+
+  const configuredWa = getConfiguredWA();
+  const storedWa = storageGet(YI_KEYS.wa);
+  if (configuredWa !== '27000000000' && (storedWa == null || storedWa === '27000000000')) {
+    storageSet(YI_KEYS.wa, configuredWa);
+  }
+}
+
 function ensureProductsSeed() {
   if (isSupabaseMode()) return;
+  migrateLocalCatalogue();
   if (storageGet(YI_KEYS.products) == null) {
     storageSet(YI_KEYS.products, JSON.stringify(DEFAULT_PRODUCTS));
+    storageSet(YI_KEYS.catalogueVersion, String(CATALOGUE_VERSION));
   }
-  if (storageGet(YI_KEYS.wa) == null && getConfiguredWA() !== '27000000000') {
-    storageSet(YI_KEYS.wa, getConfiguredWA());
+  const configuredWa = getConfiguredWA();
+  const storedWa = storageGet(YI_KEYS.wa);
+  if (configuredWa !== '27000000000' && (storedWa == null || storedWa === '27000000000')) {
+    storageSet(YI_KEYS.wa, configuredWa);
   }
 }
 

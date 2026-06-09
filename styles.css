@@ -887,7 +887,7 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: clamp(16px, 2.5vw, 22px);
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (min-width: 1100px) {
@@ -2521,5 +2521,354 @@ main > section,
   .social-strip-inner {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+/* ==========================================================================
+   Pass A — Shop UX: quick view, lightbox, filters, card interaction
+   ========================================================================== */
+
+body.modal-open,
+body.lightbox-open {
+  overflow: hidden;
+}
+
+.filter-result {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cocoa);
+  margin: -0.5rem 0 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.shop-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--cocoa);
+  font-size: 0.92rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.shop-empty[hidden] {
+  display: none !important;
+}
+
+.products-grid.is-empty {
+  min-height: 0;
+}
+
+.product-card {
+  height: 100%;
+}
+
+.product-open,
+.featured-open {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  border-radius: inherit;
+}
+
+.product-open:focus-visible,
+.featured-open:focus-visible {
+  outline: 2px solid var(--berry);
+  outline-offset: 3px;
+}
+
+.product-img-wrap {
+  overflow: hidden;
+}
+
+.product-img-wrap .media-frame img,
+.product-img-wrap img {
+  transition: transform 0.45s var(--ease-boutique);
+}
+
+.product-card:hover .product-img-wrap .media-frame img,
+.product-card:hover .product-img-wrap img,
+.product-card:focus-within .product-img-wrap .media-frame img,
+.product-card:focus-within .product-img-wrap img {
+  transform: scale(1.06);
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-piece-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--plum);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.product-card:hover .view-piece-label,
+.product-card:focus-within .view-piece-label,
+.featured-open:hover .view-piece-label,
+.featured-open:focus-within .view-piece-label {
+  background: var(--blush-panel);
+  border-color: rgba(201, 66, 120, 0.28);
+  color: var(--berry);
+}
+
+.featured-open {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  text-align: left;
+}
+
+.featured-open .view-piece-label {
+  align-self: flex-start;
+  width: auto;
+  min-width: 160px;
+}
+
+/* Product quick-view modal */
+.product-modal[hidden] {
+  display: none !important;
+}
+
+.product-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 32px);
+}
+
+.product-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(36, 18, 26, 0.52);
+  backdrop-filter: blur(6px);
+}
+
+.product-modal-panel {
+  position: relative;
+  z-index: 1;
+  width: min(920px, 100%);
+  max-height: min(90vh, 820px);
+  overflow: auto;
+  background: var(--ivory);
+  border-radius: 28px;
+  border: 1px solid rgba(201, 66, 120, 0.16);
+  box-shadow: 0 40px 100px rgba(48, 24, 32, 0.22);
+  animation: modalIn 0.35s var(--ease-boutique);
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.product-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--plum);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.product-modal-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 0;
+}
+
+.product-modal-image-btn {
+  display: block;
+  width: 100%;
+  min-height: 360px;
+  padding: 0;
+  border: none;
+  background: var(--surface-warm);
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.product-modal-image-btn img {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-modal-image-btn:hover img {
+  transform: scale(1.03);
+}
+
+.product-modal-body {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.product-modal-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--plum);
+}
+
+.product-modal-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--berry);
+}
+
+.product-modal-status {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cocoa);
+}
+
+.product-modal-colours {
+  font-size: 0.9rem;
+  color: var(--cocoa);
+  line-height: 1.5;
+}
+
+.product-modal-desc {
+  font-size: 0.92rem;
+  color: var(--mid);
+  line-height: 1.7;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.product-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.product-modal-actions .btn-primary,
+.product-modal-actions .btn-outline {
+  flex: 1 1 180px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Image lightbox */
+.image-lightbox[hidden] {
+  display: none !important;
+}
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.image-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 8, 10, 0.88);
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.image-lightbox img {
+  position: relative;
+  z-index: 1;
+  max-width: min(96vw, 1100px);
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  animation: lightboxIn 0.3s var(--ease-boutique);
+}
+
+@keyframes lightboxIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 900px) {
+  .product-modal-grid,
+  .featured-open {
+    grid-template-columns: 1fr;
+  }
+
+  .product-modal-image-btn,
+  .product-modal-image-btn img {
+    min-height: 280px;
+  }
+
+  .product-modal-actions .btn-primary,
+  .product-modal-actions .btn-outline {
+    flex: 1 1 100%;
   }
 }

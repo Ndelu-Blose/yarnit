@@ -33,6 +33,38 @@ const CAT_LINE_ICONS = {
 };
 
 let currentFilter = 'all';
+let activeModalProduct = null;
+let lightboxSrc = '';
+let lightboxAlt = '';
+
+const FILTER_LABELS = {
+  all: 'the collection',
+  bags: 'Bags',
+  tops: 'Tops',
+  hats: 'Hats',
+  winter: 'Winter Wear',
+};
+
+function getProductById(id) {
+  return getProducts().find((p) => String(p.id) === String(id));
+}
+
+function productWaMessage(p, prefix) {
+  const lead = prefix || "Hi Yarn It! I'm interested in the";
+  return lead + ' ' + p.name + ' for R' + p.price + '. Is it available?';
+}
+
+function productDescription(p) {
+  const colours = colourLabel(p.colours);
+  let text = 'Handmade to order in our Durban studio.';
+  if (colours) text += ' Available in ' + colours + '.';
+  else text += ' Custom colours available on request.';
+  return text;
+}
+
+function availabilityLabel() {
+  return 'Made to order · Handmade in Durban';
+}
 
 function productImageBasename(p) {
   const img = p && p.img ? String(p.img).trim() : '';
@@ -161,11 +193,16 @@ function categoryCardImageSrc(catId) {
 function renderAboutGallery() {
   const el = document.getElementById('aboutGallery');
   if (!el) return;
-  const imgs = getProducts()
-    .map((p) => p.img)
-    .filter((src) => hasValidImage(src))
-    .slice(0, 4);
-  const slots = imgs.length ? imgs : [null, null, null, null];
+  const seen = new Set();
+  const imgs = [];
+  getProducts().forEach((p) => {
+    if (!hasValidImage(p.img)) return;
+    const key = productImageBasename(p) || String(p.img);
+    if (seen.has(key)) return;
+    seen.add(key);
+    imgs.push(p.img);
+  });
+  const slots = imgs.length ? imgs.slice(0, 4) : [null, null, null, null];
   el.innerHTML = slots
     .map((src, i) => {
       if (!hasValidImage(src)) {
@@ -215,7 +252,7 @@ function renderCategoryCards() {
         document.getElementById('custom').scrollIntoView({ behavior: 'smooth' });
         return;
       }
-      filterProducts(cat, null);
+      filterProducts(cat);
     };
     card.addEventListener('click', go);
     card.addEventListener('keydown', (e) => {
@@ -238,14 +275,18 @@ function renderFeaturedProduct() {
     return;
   }
 
-  const msg = "Hi Yarn It! I'm interested in the " + p.name + ' for R' + p.price + '. Is it available?';
   const resolved = resolveImageSrc(p.img);
   const imgHtml = resolved
     ? '<img src="' + resolved.replace(/"/g, '&quot;') + '" alt="' + escapeHtml(p.name) + '" loading="lazy" decoding="async">'
     : imagePlaceholderHTML(p.name);
 
-  el.hidden = false;
+  el.hidden = currentFilter !== 'all';
   el.innerHTML =
+    '<button type="button" class="featured-open" data-product-id="' +
+    p.id +
+    '" aria-label="View ' +
+    escapeHtml(p.name) +
+    '">' +
     '<div class="featured-product-media">' +
     imgHtml +
     '</div>' +
@@ -257,25 +298,27 @@ function renderFeaturedProduct() {
     '<p>' +
     escapeHtml(colourLabel(p.colours) || 'Compact, colourful, and handmade to order.') +
     '</p>' +
-    '<strong>From R' +
+    '<strong>R' +
     p.price +
-    '</strong>' +
-    '<a class="btn-primary wa-link" data-wa-msg="' +
-    escapeHtml(msg) +
-    '" href="' +
-    waUrl(msg) +
-    '">Order on WhatsApp</a>' +
-    '</div>';
+    ' ZAR</strong>' +
+    '<span class="view-piece-label">View Piece</span>' +
+    '</div></button>';
 }
 
 function renderStandardProductCard(p) {
-  const msg = "Hi Yarn It! I'm interested in the " + p.name + ' for R' + p.price + '. Is it available?';
   const colours = colourLabel(p.colours);
   const catalogue = usesCataloguePhoto(p);
   const frame = renderMediaFrame(p.img, p.name);
   return (
     '<article class="product-card boutique-card reveal-item" data-cat="' +
     escapeHtml(p.cat) +
+    '" data-product-id="' +
+    p.id +
+    '">' +
+    '<button type="button" class="product-open" data-product-id="' +
+    p.id +
+    '" aria-label="View ' +
+    escapeHtml(p.name) +
     '">' +
     '<div class="product-img-wrap standard-img-wrap' +
     (catalogue ? ' is-catalogue' : '') +
@@ -292,21 +335,23 @@ function renderStandardProductCard(p) {
     (colours
       ? '<div class="product-colours"><span class="colour-label">' + escapeHtml(colours) + '</span></div>'
       : '') +
-    '<a class="wa-btn wa-btn--slim" href="' +
-    waUrl(msg) +
-    '" target="_blank" rel="noopener">' +
-    WA_SVG +
-    ' Order on WhatsApp</a>' +
-    '</div></article>'
+    '<span class="view-piece-label">View Piece</span>' +
+    '</div></button></article>'
   );
 }
 
 function renderFloatingProductCard(p) {
-  const msg = "Hi Yarn It! I'm interested in the " + p.name + ' for R' + p.price + '. Is it available?';
   const colours = colourLabel(p.colours);
   return (
     '<article class="product-card boutique-card is-floating reveal-item" data-cat="' +
     escapeHtml(p.cat) +
+    '" data-product-id="' +
+    p.id +
+    '">' +
+    '<button type="button" class="product-open" data-product-id="' +
+    p.id +
+    '" aria-label="View ' +
+    escapeHtml(p.name) +
     '">' +
     '<div class="floating-product-card product-float-shell">' +
     renderFloatingVisual(p.img, p.name, 'grid-float-visual') +
@@ -320,12 +365,8 @@ function renderFloatingProductCard(p) {
     (colours
       ? '<div class="product-colours"><span class="colour-label">' + escapeHtml(colours) + '</span></div>'
       : '') +
-    '<a class="wa-btn wa-btn--slim" href="' +
-    waUrl(msg) +
-    '" target="_blank" rel="noopener">' +
-    WA_SVG +
-    ' Order on WhatsApp</a>' +
-    '</div></div></article>'
+    '<span class="view-piece-label">View Piece</span>' +
+    '</div></div></button></article>'
   );
 }
 
@@ -350,7 +391,177 @@ function renderProducts() {
       return html.replace('reveal-item"', 'reveal-item" style="--i:' + i + '"');
     })
     .join('');
-  filterProducts(currentFilter, null);
+  filterProducts(currentFilter);
+}
+
+function setActiveFilterButton(cat) {
+  document.querySelectorAll('.filter-btn').forEach((b) => {
+    b.classList.toggle('active', b.getAttribute('data-cat') === cat);
+  });
+}
+
+function updateFeaturedForFilter(cat) {
+  const el = document.getElementById('featuredProduct');
+  if (!el || !el.innerHTML.trim()) return;
+  el.hidden = cat !== 'all';
+}
+
+function updateFilterMeta(cat) {
+  const resultEl = document.getElementById('filterResult');
+  const emptyEl = document.getElementById('shopEmpty');
+  const grid = document.getElementById('productsGrid');
+  if (!resultEl) return;
+
+  const cards = [...document.querySelectorAll('#productsGrid .product-card')];
+  const visible = cards.filter((c) => c.style.display !== 'none');
+  const count = visible.length;
+
+  if (cat === 'all') {
+    resultEl.textContent = count === 1 ? 'Showing 1 piece' : 'Showing ' + count + ' pieces';
+  } else {
+    const label = FILTER_LABELS[cat] || catLabel(cat);
+    resultEl.textContent =
+      count === 1 ? 'Showing 1 piece in ' + label : 'Showing ' + count + ' pieces in ' + label;
+  }
+
+  if (emptyEl) {
+    emptyEl.hidden = count > 0;
+  }
+  if (grid) {
+    grid.classList.toggle('is-empty', count === 0);
+  }
+}
+
+function openProductModal(id) {
+  const p = getProductById(id);
+  const modal = document.getElementById('productModal');
+  if (!p || !modal) return;
+
+  activeModalProduct = p;
+  const resolved = resolveImageSrc(p.img);
+  const img = document.getElementById('productModalImage');
+  const colours = colourLabel(p.colours);
+  const checkMsg = productWaMessage(p, "Hi Yarn It! I'd like to check availability for the");
+  const enquireMsg = productWaMessage(p);
+
+  document.getElementById('productModalCategory').textContent = catLabel(p.cat);
+  document.getElementById('productModalTitle').textContent = p.name;
+  document.getElementById('productModalPrice').textContent = 'R' + p.price + ' ZAR';
+  document.getElementById('productModalStatus').textContent = availabilityLabel();
+  document.getElementById('productModalColours').textContent = colours ? 'Colours: ' + colours : '';
+  document.getElementById('productModalDesc').textContent = productDescription(p);
+
+  if (img) {
+    if (resolved) {
+      img.src = resolved;
+      img.alt = p.name;
+      img.hidden = false;
+    } else {
+      img.removeAttribute('src');
+      img.alt = p.name;
+      img.hidden = true;
+    }
+  }
+
+  const waBtn = document.getElementById('productModalWaBtn');
+  waBtn.setAttribute('data-wa-msg', enquireMsg);
+  waBtn.href = waUrl(enquireMsg);
+
+  const checkBtn = document.getElementById('productModalCheckBtn');
+  checkBtn.onclick = function () {
+    window.open(waUrl(checkMsg), '_blank', 'noopener');
+  };
+
+  modal.hidden = false;
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  document.getElementById('productModalClose').focus();
+}
+
+function closeProductModal() {
+  const modal = document.getElementById('productModal');
+  if (!modal) return;
+  modal.hidden = true;
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  activeModalProduct = null;
+}
+
+function openLightbox(src, alt) {
+  const box = document.getElementById('imageLightbox');
+  const img = document.getElementById('imageLightboxImg');
+  if (!box || !img || !src) return;
+  lightboxSrc = src;
+  lightboxAlt = alt || '';
+  img.src = src;
+  img.alt = lightboxAlt;
+  box.hidden = false;
+  box.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('lightbox-open');
+  document.getElementById('imageLightboxClose').focus();
+}
+
+function closeLightbox() {
+  const box = document.getElementById('imageLightbox');
+  const img = document.getElementById('imageLightboxImg');
+  if (!box) return;
+  box.hidden = true;
+  box.setAttribute('aria-hidden', 'true');
+  if (img) {
+    img.removeAttribute('src');
+    img.alt = '';
+  }
+  document.body.classList.remove('lightbox-open');
+  lightboxSrc = '';
+  lightboxAlt = '';
+}
+
+function initProductInteractions() {
+  const modal = document.getElementById('productModal');
+  const lightbox = document.getElementById('imageLightbox');
+  const shop = document.getElementById('products');
+  if (!modal) return;
+
+  if (shop && !shop.dataset.shopBound) {
+    shop.dataset.shopBound = '1';
+    shop.addEventListener('click', function (e) {
+      const btn = e.target.closest('.product-open, .featured-open');
+      if (!btn) return;
+      const id = btn.getAttribute('data-product-id');
+      if (id) openProductModal(id);
+    });
+  }
+
+  document.getElementById('productModalClose').addEventListener('click', closeProductModal);
+  modal.querySelectorAll('[data-close-modal]').forEach((el) => {
+    el.addEventListener('click', closeProductModal);
+  });
+
+  const imageBtn = document.getElementById('productModalImageBtn');
+  if (imageBtn) {
+    imageBtn.addEventListener('click', function () {
+      const src = resolveImageSrc(activeModalProduct && activeModalProduct.img);
+      if (src) openLightbox(src, activeModalProduct.name);
+    });
+  }
+
+  if (lightbox) {
+    document.getElementById('imageLightboxClose').addEventListener('click', closeLightbox);
+    lightbox.querySelectorAll('[data-close-lightbox]').forEach((el) => {
+      el.addEventListener('click', closeLightbox);
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!document.getElementById('imageLightbox').hidden) {
+      closeLightbox();
+      return;
+    }
+    if (!document.getElementById('productModal').hidden) {
+      closeProductModal();
+    }
+  });
 }
 
 function applySocialLinks() {
@@ -383,6 +594,8 @@ function renderShopContent() {
   renderAboutGallery();
   applyWaLinks();
   applySocialLinks();
+  updateFeaturedForFilter(currentFilter);
+  updateFilterMeta(currentFilter);
 }
 
 async function initStore() {
@@ -404,16 +617,17 @@ async function initStore() {
 
 function filterProducts(cat, btn) {
   currentFilter = cat;
-  if (btn) {
-    document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
+  setActiveFilterButton(cat);
+  updateFeaturedForFilter(cat);
+
   const grid = document.getElementById('productsGrid');
   const applyFilter = () => {
-    document.querySelectorAll('.product-card').forEach((card) => {
+    document.querySelectorAll('#productsGrid .product-card').forEach((card) => {
       card.style.display = cat === 'all' || card.dataset.cat === cat ? '' : 'none';
     });
+    updateFilterMeta(cat);
   };
+
   if (grid) {
     grid.classList.add('is-filtering');
     requestAnimationFrame(() => {
@@ -423,6 +637,7 @@ function filterProducts(cat, btn) {
   } else {
     applyFilter();
   }
+
   if (cat !== 'all' && cat !== 'custom') {
     document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
   } else if (cat === 'custom') {
@@ -593,6 +808,7 @@ function initBoutiqueMotion() {
 }
 
 initNav();
+initProductInteractions();
 initStore().catch(function (e) {
   console.error('Shop init failed:', e);
   ensureProductsSeed();

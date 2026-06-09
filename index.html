@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/images/logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 
@@ -69,16 +69,18 @@
     <div class="section-heading fade-in">
       <p class="eyebrow">The collection</p>
       <h2 class="section-title">Shop our pieces</h2>
-      <p class="section-sub">Tap any item to order on WhatsApp. Custom colours available on request.</p>
+      <p class="section-sub">Tap any piece to view details, then check availability or enquire on WhatsApp.</p>
     </div>
     <div class="featured-product fade-in" id="featuredProduct" hidden></div>
     <div class="filter-row fade-in">
-      <button type="button" class="filter-btn active" onclick="filterProducts('all',this)">All</button>
-      <button type="button" class="filter-btn" onclick="filterProducts('bags',this)">Bags</button>
-      <button type="button" class="filter-btn" onclick="filterProducts('tops',this)">Tops</button>
-      <button type="button" class="filter-btn" onclick="filterProducts('hats',this)">Hats</button>
-      <button type="button" class="filter-btn" onclick="filterProducts('winter',this)">Winter Wear</button>
+      <button type="button" class="filter-btn active" data-cat="all" onclick="filterProducts('all',this)">All</button>
+      <button type="button" class="filter-btn" data-cat="bags" onclick="filterProducts('bags',this)">Bags</button>
+      <button type="button" class="filter-btn" data-cat="tops" onclick="filterProducts('tops',this)">Tops</button>
+      <button type="button" class="filter-btn" data-cat="hats" onclick="filterProducts('hats',this)">Hats</button>
+      <button type="button" class="filter-btn" data-cat="winter" onclick="filterProducts('winter',this)">Winter Wear</button>
     </div>
+    <p class="filter-result" id="filterResult" aria-live="polite"></p>
+    <p class="shop-empty" id="shopEmpty" hidden>No pieces in this category yet. Try another filter or ask us about a custom order.</p>
     <div class="products-grid fade-in reveal-stagger" id="productsGrid"></div>
   </div>
 </section>
@@ -261,6 +263,36 @@
 </section>
 </main>
 
+<div class="product-modal" id="productModal" hidden aria-hidden="true">
+  <div class="product-modal-backdrop" data-close-modal tabindex="-1"></div>
+  <div class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+    <button type="button" class="product-modal-close" id="productModalClose" aria-label="Close product details">&times;</button>
+    <div class="product-modal-grid">
+      <button type="button" class="product-modal-image-btn" id="productModalImageBtn" aria-label="View larger image">
+        <img id="productModalImage" alt="">
+      </button>
+      <div class="product-modal-body">
+        <p class="eyebrow" id="productModalCategory"></p>
+        <h2 class="product-modal-title" id="productModalTitle"></h2>
+        <p class="product-modal-price" id="productModalPrice"></p>
+        <p class="product-modal-status" id="productModalStatus">Made to order · Handmade in Durban</p>
+        <p class="product-modal-colours" id="productModalColours"></p>
+        <p class="product-modal-desc" id="productModalDesc"></p>
+        <div class="product-modal-actions">
+          <button type="button" class="btn-primary" id="productModalCheckBtn">Check availability</button>
+          <a class="btn-outline wa-link" id="productModalWaBtn" href="#" target="_blank" rel="noopener">Enquire on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="image-lightbox" id="imageLightbox" hidden aria-hidden="true">
+  <button type="button" class="image-lightbox-close" id="imageLightboxClose" aria-label="Close image">&times;</button>
+  <div class="image-lightbox-backdrop" data-close-lightbox></div>
+  <img id="imageLightboxImg" alt="">
+</div>
+
 <footer>
   <div class="container">
     <p class="f-logo">Yarn It!</p>
@@ -283,8 +315,8 @@
 <script src="supabase.env.js"></script>
 <script src="supabase-client.js"></script>
 <script src="supabase-data.js"></script>
-<script src="config.js?v=8"></script>
-<script src="store.js?v=8"></script>
-<script src="shop.js?v=8"></script>
+<script src="config.js?v=10"></script>
+<script src="store.js?v=10"></script>
+<script src="shop.js?v=10"></script>
 </body>
 </html>

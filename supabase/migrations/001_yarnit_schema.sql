@@ -31,7 +31,7 @@ create table if not exists public.products (
 
 create table if not exists public.shop_settings (
   id integer primary key default 1 check (id = 1),
-  whatsapp_number text not null default '27000000000',
+  whatsapp_number text not null default '27659381517',
   instagram_url text not null default '',
   tiktok_url text not null default '',
   facebook_url text not null default '',
@@ -39,7 +39,7 @@ create table if not exists public.shop_settings (
 );
 
 insert into public.shop_settings (id, whatsapp_number)
-values (1, '27000000000')
+values (1, '27659381517')
 on conflict (id) do nothing;
 
 insert into public.products (name, price, cat, colours, badge, image_url, sort_order)
