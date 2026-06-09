@@ -9,9 +9,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/images/logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=15">
+  <link rel="stylesheet" href="styles.css?v=19">
+  <link rel="stylesheet" href="dist/enhance-enhance.css?v=18">
 </head>
-<body>
+<body class="logo-intro-pending">
+
+<div id="logoIntro" class="logo-intro" role="presentation" aria-hidden="false">
+  <div class="logo-intro-stage">
+    <img
+      class="logo-intro-img"
+      src="assets/images/logo-intro.png"
+      alt="Yarn It! With Love"
+      width="320"
+      height="320"
+      decoding="async"
+    >
+    <span class="logo-intro-sparkle logo-intro-sparkle--1" aria-hidden="true"></span>
+    <span class="logo-intro-sparkle logo-intro-sparkle--2" aria-hidden="true"></span>
+    <span class="logo-intro-sparkle logo-intro-sparkle--3" aria-hidden="true"></span>
+    <span class="logo-intro-sparkle logo-intro-sparkle--4" aria-hidden="true"></span>
+    <span class="logo-intro-heart logo-intro-heart--1" aria-hidden="true">♥</span>
+    <span class="logo-intro-heart logo-intro-heart--2" aria-hidden="true">♥</span>
+  </div>
+</div>
 
 <nav class="site-nav site-header" aria-label="Primary">
   <div class="container nav-inner">
@@ -45,7 +65,9 @@
       </div>
       <p class="hero-trust hero-reveal">Made to order · Custom colours · Delivery &amp; collection available</p>
     </div>
-    <div class="hero-art hero-reveal" id="heroArt" aria-hidden="false"></div>
+    <div class="hero-art hero-reveal" id="heroArt" aria-hidden="false">
+      <div id="hero-root"></div>
+    </div>
   </div>
 </section>
 
@@ -71,27 +93,14 @@
       <h2 class="section-title">Shop our pieces</h2>
       <p class="section-sub">Tap any piece to view details, then check availability or enquire on WhatsApp.</p>
     </div>
-    <div class="filter-row fade-in">
-      <button type="button" class="filter-btn active" data-cat="all" onclick="filterProducts('all',this)">All</button>
-      <button type="button" class="filter-btn" data-cat="bags" onclick="filterProducts('bags',this)">Bags</button>
-      <button type="button" class="filter-btn" data-cat="tops" onclick="filterProducts('tops',this)">Tops</button>
-      <button type="button" class="filter-btn" data-cat="hats" onclick="filterProducts('hats',this)">Hats</button>
-      <button type="button" class="filter-btn" data-cat="winter" onclick="filterProducts('winter',this)">Winter Wear</button>
-    </div>
-    <p class="filter-result" id="filterResult" aria-live="polite"></p>
-    <p class="shop-empty" id="shopEmpty" hidden>No pieces in this category yet. Try another filter or ask us about a custom order.</p>
-    <div class="products-carousel fade-in" id="productsCarousel">
-      <button type="button" class="carousel-btn carousel-prev" id="productsCarouselPrev" aria-label="Previous pieces" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="products-carousel-viewport" id="productsCarouselViewport" tabindex="0" aria-label="Browse pieces">
-        <div class="products-grid products-carousel-track reveal-stagger" id="productsGrid"></div>
+    <div id="product-shop-root"></div>
+    <!-- Legacy fallback (hidden when React bundle loads) -->
+    <noscript>
+      <div class="filter-row fade-in">
+        <button type="button" class="filter-btn active" data-cat="all">All</button>
       </div>
-      <button type="button" class="carousel-btn carousel-next" id="productsCarouselNext" aria-label="Next pieces" hidden>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="carousel-dots" id="productsCarouselDots" role="tablist" aria-label="Browse pieces by position" hidden></div>
-    </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </noscript>
   </div>
 </section>
 
@@ -273,6 +282,34 @@
 </section>
 </main>
 
+<div class="category-modal" id="categoryModal" hidden aria-hidden="true">
+  <div class="category-modal-backdrop" data-close-category-modal tabindex="-1"></div>
+  <div class="category-modal-panel" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+    <button type="button" class="category-modal-close" id="categoryModalClose" aria-label="Close category view">&times;</button>
+    <div class="category-modal-header">
+      <p class="eyebrow">The collection</p>
+      <h2 class="category-modal-title" id="categoryModalTitle"></h2>
+      <p class="category-modal-count" id="categoryModalCount" aria-live="polite"></p>
+    </div>
+    <p class="category-modal-empty" id="categoryModalEmpty" hidden>No items in this category yet. Ask us about a custom order on WhatsApp.</p>
+    <div class="category-modal-carousel" id="categoryModalCarousel" hidden>
+      <button type="button" class="carousel-btn carousel-prev" id="categoryModalPrev" aria-label="Previous piece" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="category-modal-viewport" id="categoryModalViewport" tabindex="0" aria-label="Browse category pieces">
+        <div class="category-modal-track" id="categoryModalTrack"></div>
+      </div>
+      <button type="button" class="carousel-btn carousel-next" id="categoryModalNext" aria-label="Next piece" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="carousel-dots" id="categoryModalDots" role="tablist" aria-label="Category pieces" hidden></div>
+    </div>
+    <div class="category-modal-footer">
+      <button type="button" class="btn-outline" id="categoryModalBrowseBtn">View in shop</button>
+    </div>
+  </div>
+</div>
+
 <div class="product-modal" id="productModal" hidden aria-hidden="true">
   <div class="product-modal-backdrop" data-close-modal tabindex="-1"></div>
   <div class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
@@ -328,7 +365,8 @@
 <script src="supabase-client.js"></script>
 <script src="supabase-data.js"></script>
 <script src="config.js?v=10"></script>
-<script src="store.js?v=15"></script>
-<script src="shop.js?v=15"></script>
+<script src="store.js?v=18"></script>
+<script src="shop.js?v=18"></script>
+<script type="module" src="dist/enhance.js?v=18"></script>
 </body>
 </html>

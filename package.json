@@ -3,10 +3,22 @@
   "private": true,
   "scripts": {
     "supabase:env": "node scripts/write-supabase-env.js",
-    "postinstall": "node scripts/write-supabase-env.js"
+    "postinstall": "node scripts/write-supabase-env.js && node scripts/install-git-hooks.js",
+    "prepare": "node scripts/install-git-hooks.js",
+    "dev": "vite",
+    "build:enhance": "vite build",
+    "build": "vite build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
-    "@supabase/ssr": "^0.6.1"
+    "@supabase/ssr": "^0.6.1",
+    "framer-motion": "^11.18.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "swiper": "^11.2.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.2.2"
   }
 }
