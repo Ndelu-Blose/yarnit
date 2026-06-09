@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/images/logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=19">
+  <link rel="stylesheet" href="styles.css?v=20">
   <link rel="stylesheet" href="dist/enhance-enhance.css?v=18">
 </head>
 <body class="logo-intro-pending">
@@ -60,10 +60,15 @@
       <h1 class="hero-reveal">Crochet pieces made to order, with colour and care.</h1>
       <p class="hero-text hero-reveal">Handmade bags, tops, hats, and custom crochet pieces created slowly, carefully, and made just for you.</p>
       <div class="hero-actions hero-reveal">
-        <a class="btn-primary btn-elegant" href="#products">Shop Collection</a>
+        <a class="btn-primary btn-elegant" href="#products">Shop Collection <span class="btn-arrow" aria-hidden="true">→</span></a>
         <a class="btn-outline btn-elegant" href="#custom">Start Custom Order</a>
       </div>
-      <p class="hero-trust hero-reveal">Made to order · Custom colours · Delivery &amp; collection available</p>
+      <ul class="hero-features hero-reveal" aria-label="Studio highlights">
+        <li><span class="hero-feature-icon" aria-hidden="true">✦</span> 100% Handmade</li>
+        <li><span class="hero-feature-icon" aria-hidden="true">◐</span> Custom Colours</li>
+        <li><span class="hero-feature-icon" aria-hidden="true">◎</span> Made to Order</li>
+        <li><span class="hero-feature-icon" aria-hidden="true">⌂</span> Local Studio</li>
+      </ul>
     </div>
     <div class="hero-art hero-reveal" id="heroArt" aria-hidden="false">
       <div id="hero-root"></div>
@@ -71,36 +76,48 @@
   </div>
 </section>
 
-<section class="brand-strip" aria-label="Studio highlights">
-  <p>Handmade to order · Custom colours · Durban studio · Limited pieces</p>
-</section>
-
-<section class="category-showcase" id="categories">
-  <div class="container">
-    <div class="section-heading fade-in">
+<section class="category-showcase mock-section" id="categories">
+  <div class="container section-split">
+    <div class="section-split-intro fade-in">
       <p class="eyebrow">Browse by category</p>
       <h2 class="section-title">What we make</h2>
-      <p class="section-sub">Choose your piece, then message us for colours and availability.</p>
+      <p class="section-sub">Handmade bags, tops, hats, and winter layers — each piece made slowly in our Durban studio.</p>
+      <a class="btn-primary btn-elegant section-cta" href="#products">View all pieces <span class="btn-arrow" aria-hidden="true">→</span></a>
     </div>
-    <div class="category-grid category-gallery fade-in reveal-stagger" id="catGrid"></div>
+    <div class="section-split-content">
+      <div class="category-grid category-gallery fade-in reveal-stagger" id="catGrid"></div>
+    </div>
   </div>
 </section>
 
-<section class="shop-section products" id="products">
-  <div class="container">
-    <div class="section-heading fade-in">
+<section class="custom-banner mock-section" id="custom-banner" aria-label="Custom orders">
+  <div class="container custom-banner-inner">
+    <div class="custom-banner-copy">
+      <span class="category-num">05</span>
+      <h2 class="section-title">Custom Orders</h2>
+      <p class="section-sub">Your colour, your design, made for you.</p>
+    </div>
+    <a class="btn-primary btn-elegant custom-banner-cta" href="#custom">Start Your Custom Order <span class="btn-arrow" aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<section class="shop-section products mock-section" id="products">
+  <div class="container section-split section-split--shop">
+    <div class="section-split-intro fade-in">
       <p class="eyebrow">The collection</p>
       <h2 class="section-title">Shop our pieces</h2>
       <p class="section-sub">Tap any piece to view details, then check availability or enquire on WhatsApp.</p>
     </div>
-    <div id="product-shop-root"></div>
-    <!-- Legacy fallback (hidden when React bundle loads) -->
-    <noscript>
-      <div class="filter-row fade-in">
-        <button type="button" class="filter-btn active" data-cat="all">All</button>
-      </div>
-      <div class="products-grid" id="productsGrid"></div>
-    </noscript>
+    <div class="section-split-content section-split-content--shop">
+      <div id="product-shop-root"></div>
+      <!-- Legacy fallback (hidden when React bundle loads) -->
+      <noscript>
+        <div class="filter-row fade-in">
+          <button type="button" class="filter-btn active" data-cat="all">All</button>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+      </noscript>
+    </div>
   </div>
 </section>
 
@@ -366,7 +383,7 @@
 <script src="supabase-data.js"></script>
 <script src="config.js?v=10"></script>
 <script src="store.js?v=18"></script>
-<script src="shop.js?v=18"></script>
-<script type="module" src="dist/enhance.js?v=18"></script>
+<script src="shop.js?v=20"></script>
+<script type="module" src="dist/enhance.js?v=20"></script>
 </body>
 </html>

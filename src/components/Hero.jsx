@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
+  colourSwatches,
   getProducts,
   heroPieceCopy,
   openProductModal,
@@ -46,10 +47,16 @@ export default function Hero() {
           transition={{ duration: 0.65, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           whileHover={{ y: -3 }}
         >
+          {featured.badge ? <span className="hero-mini-badge">{featured.badge}</span> : null}
           <span className="hero-mini-eyebrow">{copy.tag}</span>
+          <div className="hero-mini-swatches" aria-hidden={!featured.colours}>
+            {colourSwatches(featured.colours).map((s) => (
+              <span key={s.name} className="colour-swatch" style={{ backgroundColor: s.hex }} />
+            ))}
+          </div>
           <h3>{copy.title}</h3>
           <p className="hero-mini-price">{copy.priceText}</p>
-          <span className="hero-mini-cta">View piece</span>
+          <span className="hero-mini-cta">View piece <span className="btn-arrow">→</span></span>
         </motion.button>
       ) : null}
     </motion.div>

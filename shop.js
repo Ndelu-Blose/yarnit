@@ -240,17 +240,15 @@ function renderCategoryCards() {
   const grid = document.getElementById('catGrid');
   if (!grid) return;
 
-  grid.innerHTML = CATEGORIES.map((c, i) => {
+  const gridCategories = CATEGORIES.filter((c) => c.id !== 'custom');
+  grid.innerHTML = gridCategories.map((c, i) => {
     const num = String(i + 1).padStart(2, '0');
-    const sizeClass = c.id === 'custom' ? ' category-wide' : '';
     const src = categoryCardImageSrc(c.id);
     const imgTag = src
       ? '<img src="' + src.replace(/"/g, '&quot;') + '" alt="' + escapeHtml(c.title) + '" loading="lazy" decoding="async">'
       : '';
     return (
-      '<article class="category-card' +
-      sizeClass +
-      ' reveal-item" data-cat="' +
+      '<article class="category-card reveal-item" data-cat="' +
       c.id +
       '" role="button" tabindex="0" style="--i:' +
       i +
@@ -262,7 +260,7 @@ function renderCategoryCards() {
       escapeHtml(c.title) +
       '</h3><p>' +
       escapeHtml(c.desc) +
-      '</p></div></article>'
+      '</p><span class="category-card-arrow" aria-hidden="true">→</span></div></article>'
     );
   }).join('');
 

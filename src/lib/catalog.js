@@ -22,6 +22,36 @@ export function resolveImageSrc(img) {
   return img || null;
 }
 
+const SWATCH_HEX = {
+  pink: '#f4a8c8',
+  green: '#7cb87c',
+  yellow: '#f0d878',
+  denim: '#6b8cae',
+  blue: '#6b8cae',
+  'royal blue': '#4a6fa5',
+  magenta: '#d85f92',
+  natural: '#e8dcc8',
+  tan: '#d4b896',
+  black: '#3d3d3d',
+  lavender: '#c8b4d8',
+  cream: '#f5efe0',
+  chocolate: '#8b5a3c',
+  taupe: '#b8a090',
+  'sky blue': '#8ecae6',
+};
+
+export function colourSwatches(colours) {
+  if (!colours) return [];
+  return String(colours)
+    .split(',')
+    .map((c) => c.trim())
+    .filter(Boolean)
+    .map((name) => ({
+      name,
+      hex: SWATCH_HEX[name.toLowerCase()] || '#f0c0d6',
+    }));
+}
+
 export function colourLabel(colours) {
   if (typeof window.colourLabel === 'function') return window.colourLabel(colours);
   if (!colours) return '';

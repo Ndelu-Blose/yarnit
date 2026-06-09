@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { colourLabel, openProductModal, resolveImageSrc, usesCataloguePhoto } from '../lib/catalog';
+import ColourSwatches from './ColourSwatches';
 
 export default function ProductCard({ product, index }) {
   const catalogue = usesCataloguePhoto(product);
@@ -21,7 +22,8 @@ export default function ProductCard({ product, index }) {
         onClick={() => openProductModal(product.id)}
         aria-label={'View ' + product.name}
       >
-        <div className={'product-img-wrap standard-img-wrap' + (catalogue ? ' is-catalogue' : '')}>
+        <div className={'product-img-wrap standard-img-wrap mock-card-media' + (catalogue ? ' is-catalogue' : '')}>
+          <span className="product-favourite" aria-hidden="true">♡</span>
           {catalogue ? <span className="catalogue-chip">Colour range</span> : null}
           {product.badge ? <span className="product-badge">{product.badge}</span> : null}
           {src ? (
@@ -42,12 +44,13 @@ export default function ProductCard({ product, index }) {
             R{product.price}
             <span> ZAR</span>
           </p>
+          <ColourSwatches colours={product.colours} />
           {colourLabel(product.colours) ? (
             <div className="product-colours">
               <span className="colour-label">{colourLabel(product.colours)}</span>
             </div>
           ) : null}
-          <span className="view-piece-label">View piece</span>
+          <span className="view-piece-label">View piece <span className="btn-arrow" aria-hidden="true">→</span></span>
         </div>
       </button>
     </motion.article>
