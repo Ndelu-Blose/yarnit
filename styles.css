@@ -2348,16 +2348,171 @@ main > section,
   margin-top: 0.5rem;
 }
 
-.shop-section .products-grid {
-  gap: clamp(14px, 2vw, 20px);
-}
-
 .shop-section .product-card.boutique-card {
   box-shadow: 0 8px 24px rgba(48, 24, 32, 0.05);
 }
 
 .shop-section .standard-img-wrap {
   aspect-ratio: 4 / 5;
+}
+
+/* Shop pieces carousel */
+.shop-section .products-carousel {
+  position: relative;
+  margin-top: 0.25rem;
+}
+
+.shop-section .products-carousel.is-empty,
+.shop-section .products-carousel[hidden] {
+  display: none !important;
+}
+
+.shop-section .products-carousel-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px clamp(28px, 6vw, 56px) 8px 2px;
+  margin-right: -0.5rem;
+  mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent 100%);
+}
+
+.shop-section .products-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.shop-section .products-carousel-viewport:focus-visible {
+  outline: 2px solid var(--berry);
+  outline-offset: 4px;
+  border-radius: var(--radius);
+}
+
+.shop-section .products-carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: clamp(14px, 2vw, 20px);
+  width: max-content;
+  min-width: 100%;
+}
+
+.shop-section .products-carousel-track .product-card {
+  flex: 0 0 clamp(200px, 62vw, 255px);
+  width: clamp(200px, 62vw, 255px);
+  max-width: 255px;
+  scroll-snap-align: start;
+}
+
+.shop-section .products-carousel-track .product-card:hover {
+  transform: none;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 42%;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(201, 66, 120, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--plum);
+  box-shadow: 0 8px 24px rgba(48, 24, 32, 0.1);
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.carousel-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.carousel-btn:hover:not(:disabled) {
+  border-color: rgba(201, 66, 120, 0.42);
+  transform: translateY(-1px);
+}
+
+.carousel-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.carousel-btn[hidden] {
+  display: none !important;
+}
+
+.carousel-prev {
+  left: -6px;
+}
+
+.carousel-next {
+  right: -6px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1.25rem;
+  padding: 0 0.5rem;
+}
+
+.carousel-dots[hidden] {
+  display: none !important;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(201, 66, 120, 0.22);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.carousel-dot:hover {
+  background: rgba(201, 66, 120, 0.45);
+}
+
+.carousel-dot.is-active {
+  background: var(--berry);
+  transform: scale(1.2);
+}
+
+.carousel-dot:focus-visible {
+  outline: 2px solid var(--berry);
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .carousel-prev {
+    left: 4px;
+  }
+
+  .carousel-next {
+    right: 4px;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    top: 38%;
+    background: rgba(255, 255, 255, 0.92);
+  }
 }
 
 /* —— About refinements —— */
