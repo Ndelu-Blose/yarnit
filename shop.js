@@ -108,62 +108,54 @@ function firstProductImageForCategory(cat) {
   return hasValidImage(fallback) ? fallback : null;
 }
 
-function renderHeroShowcase() {
-  const el = document.getElementById('heroShowcase');
-  if (!el) return;
+function heroEditorialImageHtml(src, alt) {
+  const resolved = resolveImageSrc(src);
+  const safeAlt = escapeHtml(alt || 'Yarn It handmade crochet');
+  if (!resolved) {
+    return '<div class="hero-image-frame">' + imagePlaceholderHTML(alt) + '</div>';
+  }
+  const safeSrc = resolved.replace(/"/g, '&quot;');
+  return (
+    '<div class="hero-image-frame">' +
+    '<img src="' +
+    safeSrc +
+    '" alt="' +
+    safeAlt +
+    '" loading="eager" decoding="async">' +
+    '</div>'
+  );
+}
 
-  const list = getProducts();
-  const featured = pickHeroProduct(list);
+function renderHeroEditorial() {
+  const art = document.getElementById('heroArt');
+  if (!art) return;
+
+  const featured = pickHeroProduct(getProducts());
   if (!featured) {
-    el.innerHTML = renderFloatingVisual(null, 'Featured piece', 'hero-float-visual');
+    art.innerHTML = heroEditorialImageHtml(null, 'Yarn It crochet pieces');
     return;
   }
 
   const copy = heroPieceCopy(featured);
-  const catalogue = usesCataloguePhoto(featured);
-  const visual = catalogue
-    ? '<div class="hero-catalogue-img">' + renderMediaFrame(featured.img, featured.name) + '</div>'
-    : renderFloatingVisual(featured.img, featured.name, 'hero-float-visual');
-  const cardClass = catalogue
-    ? 'boutique-card hero-catalogue-card'
-    : 'floating-product-card boutique-card hero-floating-card';
-
-  el.innerHTML =
-    '<div class="hero-stage">' +
-    '<div class="hero-glow" aria-hidden="true"></div>' +
-    '<article class="' +
-    cardClass +
-    '">' +
-    visual +
-    '<div class="hero-piece-body">' +
-    '<p class="hero-piece-tag">' +
+  const priceText = copy.priceHtml.replace(/<[^>]+>/g, '').trim();
+  art.innerHTML =
+    heroEditorialImageHtml(featured.img, featured.name) +
+    '<div class="hero-mini-card">' +
+    '<span class="hero-mini-eyebrow">' +
     escapeHtml(copy.tag) +
-    '</p>' +
-    '<h3 class="hero-piece-title">' +
+    '</span>' +
+    '<h3>' +
     escapeHtml(copy.title) +
     '</h3>' +
-    '<p class="hero-piece-price">' +
-    copy.priceHtml +
+    '<p class="hero-mini-price">' +
+    escapeHtml(priceText) +
     '</p>' +
-    (copy.meta ? '<p class="hero-piece-meta">' + escapeHtml(copy.meta) + '</p>' : '') +
-    '<a class="btn-primary btn-elegant hero-piece-cta wa-link" data-wa-msg="' +
-    escapeHtml(copy.waMsg) +
-    '" href="' +
-    waUrl(copy.waMsg) +
-    '">Enquire on WhatsApp</a>' +
-    '</div></article></div>';
-  if (!catalogue) {
-    const card = el.querySelector('.hero-floating-card');
-    if (card) card.classList.add('hero-piece-idle');
-  }
+    '</div>';
 }
 
-function renderCategoryVisual(catId, title) {
+function categoryCardImageSrc(catId) {
   const src = firstProductImageForCategory(catId);
-  if (hasValidImage(src)) {
-    return '<div class="collection-catalogue-img">' + renderMediaFrame(src, title) + '</div>';
-  }
-  return '<div class="collection-preview-stitch stitch-pattern" aria-hidden="true"></div>';
+  return hasValidImage(src) ? resolveImageSrc(src) : null;
 }
 
 function renderAboutGallery() {
@@ -191,26 +183,40 @@ function renderCategoryCards() {
   if (!grid) return;
 
   grid.innerHTML = CATEGORIES.map((c, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    const sizeClass = c.id === 'bags' ? ' category-large' : c.id === 'custom' ? ' category-wide' : '';
+    const src = categoryCardImageSrc(c.id);
+    const imgTag = src
+      ? '<img src="' + src.replace(/"/g, '&quot;') + '" alt="' + escapeHtml(c.title) + '" loading="lazy" decoding="async">'
+      : '';
     return (
-      '<article class="boutique-card collection-tile cat-card reveal-item" data-cat="' +
+      '<article class="category-card' +
+      sizeClass +
+      ' reveal-item" data-cat="' +
       c.id +
       '" role="button" tabindex="0" style="--i:' +
       i +
       '">' +
-      '<div class="collection-preview">' +
-      renderCategoryVisual(c.id, c.title) +
-      '</div>' +
-      '<div class="collection-body"><h3>' +
+      imgTag +
+      '<div class="category-card-body"><span class="category-num">' +
+      num +
+      '</span><h3>' +
       escapeHtml(c.title) +
       '</h3><p>' +
       escapeHtml(c.desc) +
-      '</p><span class="tile-explore">Explore</span></div></article>'
+      '</p></div></article>'
     );
   }).join('');
 
-  grid.querySelectorAll('.cat-card').forEach((card) => {
+  grid.querySelectorAll('.category-card').forEach((card) => {
     const cat = card.dataset.cat;
-    const go = () => filterProducts(cat, null);
+    const go = () => {
+      if (cat === 'custom') {
+        document.getElementById('custom').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      filterProducts(cat, null);
+    };
     card.addEventListener('click', go);
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -219,6 +225,47 @@ function renderCategoryCards() {
       }
     });
   });
+}
+
+function renderFeaturedProduct() {
+  const el = document.getElementById('featuredProduct');
+  if (!el) return;
+
+  const p = pickHeroProduct(getProducts());
+  if (!p) {
+    el.innerHTML = '';
+    el.hidden = true;
+    return;
+  }
+
+  const msg = "Hi Yarn It! I'm interested in the " + p.name + ' for R' + p.price + '. Is it available?';
+  const resolved = resolveImageSrc(p.img);
+  const imgHtml = resolved
+    ? '<img src="' + resolved.replace(/"/g, '&quot;') + '" alt="' + escapeHtml(p.name) + '" loading="lazy" decoding="async">'
+    : imagePlaceholderHTML(p.name);
+
+  el.hidden = false;
+  el.innerHTML =
+    '<div class="featured-product-media">' +
+    imgHtml +
+    '</div>' +
+    '<div class="featured-copy">' +
+    '<p class="eyebrow">Featured piece</p>' +
+    '<h3>' +
+    escapeHtml(p.name) +
+    '</h3>' +
+    '<p>' +
+    escapeHtml(colourLabel(p.colours) || 'Compact, colourful, and handmade to order.') +
+    '</p>' +
+    '<strong>From R' +
+    p.price +
+    '</strong>' +
+    '<a class="btn-primary wa-link" data-wa-msg="' +
+    escapeHtml(msg) +
+    '" href="' +
+    waUrl(msg) +
+    '">Order on WhatsApp</a>' +
+    '</div>';
 }
 
 function renderStandardProductCard(p) {
@@ -289,12 +336,15 @@ function renderProductCard(p) {
 function renderProducts() {
   const ps = getProducts();
   const grid = document.getElementById('productsGrid');
+  const featured = pickHeroProduct(ps);
+  const gridProducts = featured ? ps.filter((p) => p.id != featured.id) : ps;
+
   if (!ps.length) {
     grid.innerHTML =
       '<p class="empty-shop">No pieces in the collection yet. Open <a href="admin.html">admin</a> to add products, then refresh.</p>';
     return;
   }
-  grid.innerHTML = ps
+  grid.innerHTML = gridProducts
     .map((p, i) => {
       const html = renderProductCard(p);
       return html.replace('reveal-item"', 'reveal-item" style="--i:' + i + '"');
@@ -310,7 +360,7 @@ function applySocialLinks() {
     fb: SITE_CONFIG.social.facebook,
   };
   Object.keys(map).forEach((key) => {
-    document.querySelectorAll('.social-card.' + key + ', .social-footer-' + key).forEach((a) => {
+    document.querySelectorAll('.social-card.' + key + ', .social-link.' + key + ', .social-footer-' + key).forEach((a) => {
       if (map[key]) a.href = map[key];
     });
   });
@@ -326,8 +376,9 @@ function applyWaLinks() {
 }
 
 function renderShopContent() {
-  renderHeroShowcase();
+  renderHeroEditorial();
   renderCategoryCards();
+  renderFeaturedProduct();
   renderProducts();
   renderAboutGallery();
   applyWaLinks();

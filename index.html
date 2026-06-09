@@ -9,11 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/images/logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
 
-<nav class="site-nav" aria-label="Primary">
+<nav class="site-nav site-header" aria-label="Primary">
   <div class="container nav-inner">
     <a class="nav-logo" href="#home" aria-label="Yarn It! With Love — home">
       <span class="nav-logo-text">Yarn It!</span>
@@ -32,46 +32,46 @@
   </div>
 </nav>
 
-<section class="hero" id="home">
-  <div class="container hero-grid">
-    <div class="hero-content">
-      <span class="hero-badge hero-reveal">Handmade in Durban</span>
-      <h1 class="hero-reveal">Considered crochet for everyday wear</h1>
-      <p class="hero-lead hero-reveal">Handmade bags, tops, and accessories from our Durban studio — refined colour, careful finishing, and pieces made to order.</p>
-      <div class="hero-btns hero-reveal">
+<main>
+<section class="hero hero-editorial" id="home">
+  <div class="container hero-editorial-inner">
+    <div class="hero-copy">
+      <p class="eyebrow hero-reveal">Handmade in Durban</p>
+      <h1 class="hero-reveal">Crochet pieces made to order, with colour and care.</h1>
+      <p class="hero-text hero-reveal">Handmade bags, tops, hats, and custom crochet pieces created slowly, carefully, and made just for you.</p>
+      <div class="hero-actions hero-reveal">
         <a class="btn-primary btn-elegant" href="#products">Shop Collection</a>
-        <a class="btn-outline btn-elegant wa-link" data-wa-msg="Hi Yarn It! I'd love to browse your collection." href="#">Order on WhatsApp</a>
+        <a class="btn-outline btn-elegant" href="#custom">Start Custom Order</a>
       </div>
-      <p class="hero-trust hero-reveal">Made to order · Custom colours · Limited pieces</p>
+      <p class="hero-trust hero-reveal">Made to order · Custom colours · Delivery &amp; collection available</p>
     </div>
-    <div class="hero-showcase" id="heroShowcase"></div>
+    <div class="hero-art hero-reveal" id="heroArt" aria-hidden="false"></div>
   </div>
 </section>
 
-<div class="brand-statement fade-in" aria-label="Studio highlights">
-  <div class="container">
-    <p class="brand-statement-text">Handmade to order · Custom colours · Durban studio · Limited pieces</p>
-  </div>
-</div>
+<section class="brand-strip" aria-label="Studio highlights">
+  <p>Handmade to order · Custom colours · Durban studio · Limited pieces</p>
+</section>
 
-<section class="categories" id="categories">
+<section class="category-showcase" id="categories">
   <div class="container">
-    <div class="section-head fade-in">
-      <p class="section-tag">Browse by category</p>
-      <h2 class="section-title">What We Make</h2>
-      <p class="section-sub">Every piece is handmade to order. Choose a category to explore the collection.</p>
+    <div class="section-heading fade-in">
+      <p class="eyebrow">Browse by category</p>
+      <h2 class="section-title">What we make</h2>
+      <p class="section-sub">Choose your piece, then message us for colours and availability.</p>
     </div>
-    <div class="cat-grid fade-in reveal-stagger" id="catGrid"></div>
+    <div class="category-grid fade-in reveal-stagger" id="catGrid"></div>
   </div>
 </section>
 
-<section class="products" id="products">
+<section class="shop-section products" id="products">
   <div class="container">
-    <div class="section-head fade-in">
-      <p class="section-tag">The collection</p>
-      <h2 class="section-title">Shop Our Pieces</h2>
+    <div class="section-heading fade-in">
+      <p class="eyebrow">The collection</p>
+      <h2 class="section-title">Shop our pieces</h2>
       <p class="section-sub">Tap any item to order on WhatsApp. Custom colours available on request.</p>
     </div>
+    <div class="featured-product fade-in" id="featuredProduct" hidden></div>
     <div class="filter-row fade-in">
       <button type="button" class="filter-btn active" onclick="filterProducts('all',this)">All</button>
       <button type="button" class="filter-btn" onclick="filterProducts('bags',this)">Bags</button>
@@ -87,7 +87,7 @@
   <div class="container about-inner">
     <div class="about-gallery fade-in" id="aboutGallery"></div>
     <div class="about-text fade-in">
-      <p class="section-tag">Our story</p>
+      <p class="eyebrow">Our story</p>
       <h2 class="section-title">About Yarn It!</h2>
       <p class="section-sub">A Durban crochet atelier for pieces that feel considered, wearable, and beautifully handmade.</p>
       <p class="about-copy">Each Yarn It piece is made slowly and intentionally — from statement bags and tops to hats and winter layers — with colour, texture, and a quiet sense of luxury.</p>
@@ -126,13 +126,14 @@
 
 <section class="custom" id="custom">
   <div class="container">
-    <div class="section-head fade-in">
-      <p class="section-tag">Made for you</p>
+    <div class="section-heading fade-in">
+      <p class="eyebrow">Made for you</p>
       <h2 class="section-title">Custom Orders</h2>
       <p class="section-sub">Can't find your perfect colour or style? We will make it just for you.</p>
     </div>
     <div class="custom-inner">
-      <div class="fade-in">
+      <div class="custom-steps-panel fade-in">
+        <h3 class="custom-steps-title">How custom orders work</h3>
         <div class="steps">
           <div class="step"><span class="step-num">1</span><div><h4>Choose your piece</h4><p>Bag, top, hat, beanie, or scarf.</p></div></div>
           <div class="step"><span class="step-num">2</span><div><h4>Select your colour</h4><p>Any shade you love — we source the yarn.</p></div></div>
@@ -195,26 +196,25 @@
   </div>
 </section>
 
-<section class="social" id="social">
-  <div class="container">
-    <div class="section-head fade-in">
-      <p class="section-tag">Follow along</p>
-      <h2 class="section-title">Find Us Online</h2>
-      <p class="section-sub">New drops, custom designs, and behind-the-scenes from the studio.</p>
-    </div>
-    <div class="social-cards fade-in">
-      <a class="social-card ig" href="#" target="_blank" rel="noopener">Instagram</a>
-      <a class="social-card tt" href="#" target="_blank" rel="noopener">TikTok</a>
-      <a class="social-card fb" href="#" target="_blank" rel="noopener">Facebook</a>
-      <a class="social-card wa wa-link" data-wa-msg="Hi Yarn It!" href="#" target="_blank" rel="noopener">WhatsApp</a>
-    </div>
+<section class="social-strip" id="social">
+  <div class="container social-strip-inner fade-in">
+    <span class="social-strip-label">Follow the studio</span>
+    <nav class="social-strip-links" aria-label="Social media">
+      <a class="social-link ig" href="#" target="_blank" rel="noopener">Instagram</a>
+      <span class="social-sep" aria-hidden="true">·</span>
+      <a class="social-link tt" href="#" target="_blank" rel="noopener">TikTok</a>
+      <span class="social-sep" aria-hidden="true">·</span>
+      <a class="social-link fb" href="#" target="_blank" rel="noopener">Facebook</a>
+      <span class="social-sep" aria-hidden="true">·</span>
+      <a class="social-link wa wa-link" data-wa-msg="Hi Yarn It!" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </nav>
   </div>
 </section>
 
 <section class="contact" id="contact">
   <div class="container contact-inner">
     <div class="contact-info fade-in">
-      <p class="section-tag">Get in touch</p>
+      <p class="eyebrow">Get in touch</p>
       <h2 class="section-title">Contact Yarn It!</h2>
       <p>Questions about an order, custom colours, or availability — we would love to hear from you.</p>
       <div class="contact-item">
@@ -235,7 +235,7 @@
         </span>
         Delivery &amp; collection available
       </div>
-      <p style="margin-top:1.5rem">
+      <p class="contact-cta-wrap">
         <a class="btn-primary wa-link" data-wa-msg="Hi Yarn It!" href="#">Message on WhatsApp</a>
       </p>
     </div>
@@ -259,6 +259,7 @@
     </form>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="container">
@@ -282,8 +283,8 @@
 <script src="supabase.env.js"></script>
 <script src="supabase-client.js"></script>
 <script src="supabase-data.js"></script>
-<script src="config.js?v=7"></script>
-<script src="store.js?v=7"></script>
-<script src="shop.js?v=7"></script>
+<script src="config.js?v=8"></script>
+<script src="store.js?v=8"></script>
+<script src="shop.js?v=8"></script>
 </body>
 </html>
