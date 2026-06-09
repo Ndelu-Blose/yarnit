@@ -16,6 +16,9 @@ const CATEGORIES = [
 /** Reserved for future cut-out product PNGs (single item on transparent background). */
 const FLOATING_PRODUCT_KEYS = [];
 
+/** Canonical hero feature — lowercase name match (sync with store.js / SQL seed). */
+const HERO_PRODUCT_KEY = 'chunky mini crochet bag';
+
 const CAT_LINE_ICONS = {
   bags:
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8V6a4 4 0 018 0v2"/><path d="M4 8h16l-1.2 12H5.2L4 8z"/></svg>',
@@ -53,7 +56,7 @@ function isFloatingProduct(p) {
 }
 
 function pickHeroProduct(list) {
-  const chunky = list.find((p) => (p.name || '').toLowerCase() === 'chunky mini crochet bag');
+  const chunky = list.find((p) => (p.name || '').toLowerCase() === HERO_PRODUCT_KEY);
   if (chunky) return chunky;
   const bag = list.find((p) => p.cat === 'bags' && hasValidImage(p.img));
   return bag || list[0];
@@ -146,7 +149,7 @@ function renderHeroShowcase() {
     '<a class="btn-primary btn-elegant hero-piece-cta wa-link" data-wa-msg="' +
     escapeHtml(copy.waMsg) +
     '" href="' +
-    waUrl(msg) +
+    waUrl(copy.waMsg) +
     '">Enquire on WhatsApp</a>' +
     '</div></article></div>';
   if (!catalogue) {
@@ -219,7 +222,6 @@ function renderCategoryCards() {
 }
 
 function renderStandardProductCard(p) {
-  const badge = p.badge ? '<span class="product-badge">' + escapeHtml(p.badge) + '</span>' : '';
   const msg = "Hi Yarn It! I'm interested in the " + p.name + ' for R' + p.price + '. Is it available?';
   const colours = colourLabel(p.colours);
   const catalogue = usesCataloguePhoto(p);
@@ -231,7 +233,6 @@ function renderStandardProductCard(p) {
     '<div class="product-img-wrap standard-img-wrap' +
     (catalogue ? ' is-catalogue' : '') +
     '">' +
-    badge +
     frame +
     '</div>' +
     '<div class="product-info">' +
@@ -254,7 +255,6 @@ function renderStandardProductCard(p) {
 }
 
 function renderFloatingProductCard(p) {
-  const badge = p.badge ? '<span class="product-badge">' + escapeHtml(p.badge) + '</span>' : '';
   const msg = "Hi Yarn It! I'm interested in the " + p.name + ' for R' + p.price + '. Is it available?';
   const colours = colourLabel(p.colours);
   return (
@@ -262,7 +262,6 @@ function renderFloatingProductCard(p) {
     escapeHtml(p.cat) +
     '">' +
     '<div class="floating-product-card product-float-shell">' +
-    badge +
     renderFloatingVisual(p.img, p.name, 'grid-float-visual') +
     '<div class="product-info">' +
     '<h3>' +
@@ -326,16 +325,30 @@ function applyWaLinks() {
   if (waText) waText.textContent = 'WhatsApp: ' + formatWaDisplay(getWA());
 }
 
-async function initStore() {
-  const synced = await hydrateFromSupabase();
-  if (!synced) ensureProductsSeed();
+function renderShopContent() {
   renderHeroShowcase();
   renderCategoryCards();
   renderProducts();
   renderAboutGallery();
   applyWaLinks();
   applySocialLinks();
+}
+
+async function initStore() {
+  ensureProductsSeed();
+  renderShopContent();
   initBoutiqueMotion();
+  refreshScrollReveal();
+
+  try {
+    const synced = await hydrateFromSupabase();
+    if (synced) {
+      renderShopContent();
+      refreshScrollReveal();
+    }
+  } catch (e) {
+    console.warn('[Yarn It!] Supabase sync skipped:', e);
+  }
 }
 
 function filterProducts(cat, btn) {
@@ -390,6 +403,8 @@ function submitCustomOrder() {
   const phone = form.querySelector('#customPhone').value.trim();
   const product = form.querySelector('#customProduct').value;
   const colour = form.querySelector('#customColour').value.trim();
+  const size = form.querySelector('#customSize').value;
+  const notes = form.querySelector('#customNotes').value.trim();
 
   clearFormErrors(['errCustomName', 'errCustomPhone', 'errCustomProduct']);
 
@@ -410,7 +425,7 @@ function submitCustomOrder() {
   }
   if (!valid) return;
 
-  const msg =
+  let msg =
     "Hi Yarn It! I'd like to place a custom order.\nName: " +
     name +
     '\nPhone: ' +
@@ -418,7 +433,10 @@ function submitCustomOrder() {
     '\nProduct: ' +
     product +
     '\nColour: ' +
-    colour;
+    colour +
+    '\nSize: ' +
+    size;
+  if (notes) msg += '\nNotes: ' + notes;
   window.open(waUrl(msg), '_blank', 'noopener');
 }
 
@@ -457,6 +475,15 @@ function initNav() {
 
 let scrollRevealObserver;
 
+function revealInView(el) {
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+    el.classList.add('visible');
+    if (el.classList.contains('reveal-stagger')) el.classList.add('is-visible');
+  }
+}
+
 function initScrollReveal() {
   if (scrollRevealObserver) scrollRevealObserver.disconnect();
   scrollRevealObserver = new IntersectionObserver(
@@ -469,9 +496,19 @@ function initScrollReveal() {
         scrollRevealObserver.unobserve(el);
       });
     },
-    { threshold: 0.12, rootMargin: '0px 0px -5% 0px' }
+    { threshold: 0.06, rootMargin: '0px' }
   );
-  document.querySelectorAll('.fade-in, .reveal-stagger').forEach((el) => scrollRevealObserver.observe(el));
+  document.querySelectorAll('.fade-in, .reveal-stagger').forEach((el) => {
+    revealInView(el);
+    scrollRevealObserver.observe(el);
+  });
+}
+
+function refreshScrollReveal() {
+  document.querySelectorAll('.fade-in, .reveal-stagger').forEach((el) => {
+    revealInView(el);
+    if (scrollRevealObserver) scrollRevealObserver.observe(el);
+  });
 }
 
 function initHeroMotion() {
@@ -480,31 +517,37 @@ function initHeroMotion() {
   requestAnimationFrame(() => hero.classList.add('is-ready'));
 }
 
+let navScrollHandler = null;
+let navScrollBound = false;
+
 function initNavScroll() {
-  const nav = document.querySelector('nav');
+  const nav = document.querySelector('.site-nav');
   if (!nav) return;
-  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 16);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  if (!navScrollHandler) {
+    navScrollHandler = () => nav.classList.toggle('is-scrolled', window.scrollY > 16);
+  }
+  navScrollHandler();
+  if (!navScrollBound) {
+    window.addEventListener('scroll', navScrollHandler, { passive: true });
+    navScrollBound = true;
+  }
 }
 
 function initBoutiqueMotion() {
+  document.documentElement.classList.add('motion-on');
   initScrollReveal();
   initHeroMotion();
   initNavScroll();
+  requestAnimationFrame(refreshScrollReveal);
 }
 
 initNav();
 initStore().catch(function (e) {
   console.error('Shop init failed:', e);
   ensureProductsSeed();
-  renderHeroShowcase();
-  renderCategoryCards();
-  renderProducts();
-  renderAboutGallery();
-  applyWaLinks();
-  applySocialLinks();
+  renderShopContent();
   initBoutiqueMotion();
+  refreshScrollReveal();
 });
 window.addEventListener('storage', function () {
   if (!isSupabaseMode()) initStore();

@@ -12,7 +12,7 @@ const YI_CATEGORIES = ['bags', 'tops', 'hats', 'winter', 'custom'];
 const DEFAULT_PRODUCTS = [
   { id: 1, name: 'Pink Crochet Chain Bag', price: 250, cat: 'bags', colours: 'Pink, Green, Yellow, Denim', badge: 'Best Seller', img: 'category-bags.jpg' },
   { id: 2, name: 'Rose Crochet Handbag', price: 350, cat: 'bags', colours: 'Taupe, Cream', badge: 'New In', img: 'product-rose-handbag.jpg' },
-  { id: 3, name: 'Chunky Mini Crochet Bag', price: 220, cat: 'bags', colours: 'Forest Green, Butter Yellow, Denim', badge: '', img: 'category-bags.jpg' },
+  { id: 3, name: 'Chunky Mini Crochet Bag', price: 220, cat: 'bags', colours: 'Pink, Green, Yellow, Denim', badge: '', img: 'category-bags.jpg' },
   { id: 4, name: 'Blue Flower Crochet Top', price: 180, cat: 'tops', colours: 'Royal Blue, Magenta, Natural', badge: 'Fan Favourite', img: 'category-tops.jpg' },
   { id: 5, name: 'Cowrie Shell Crochet Top', price: 200, cat: 'tops', colours: 'Natural, Shell accent', badge: '', img: 'category-tops.jpg' },
   { id: 6, name: 'Crochet Bucket Hat', price: 160, cat: 'hats', colours: 'Tan, Black, Lavender, Blue, Pink, Cream', badge: '6 Colours', img: 'category-hats.jpg' },
@@ -182,15 +182,26 @@ function isSupabaseConfigured() {
   return typeof window.yarnitSupabase !== 'undefined' && window.yarnitSupabase.isConfigured();
 }
 
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise(function (_, reject) {
+      setTimeout(function () {
+        reject(new Error('Supabase request timed out'));
+      }, ms);
+    }),
+  ]);
+}
+
 async function hydrateFromSupabase() {
   if (!isSupabaseConfigured() || typeof window.yarnitSupabaseData === 'undefined') {
     return false;
   }
   try {
-    const products = await window.yarnitSupabaseData.fetchProducts();
+    const products = await withTimeout(window.yarnitSupabaseData.fetchProducts(), 5000);
     const list = products.length ? products : DEFAULT_PRODUCTS.map((p) => ({ ...p }));
     setProductsCache(applyDefaultProductImages(list));
-    const settings = await window.yarnitSupabaseData.fetchSettings();
+    const settings = await withTimeout(window.yarnitSupabaseData.fetchSettings(), 5000);
     if (settings?.whatsapp_number) setWA(settings.whatsapp_number);
     if (settings && typeof SITE_CONFIG !== 'undefined') {
       if (settings.instagram_url) SITE_CONFIG.social.instagram = settings.instagram_url;

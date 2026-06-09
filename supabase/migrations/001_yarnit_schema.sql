@@ -45,13 +45,13 @@ on conflict (id) do nothing;
 insert into public.products (name, price, cat, colours, badge, image_url, sort_order)
 select v.name, v.price, v.cat, v.colours, v.badge, v.image_url, v.sort_order
 from (values
-  ('Pink Crochet Chain Bag', 250, 'bags', 'Pink, Green, Cream', 'Best Seller', '', 1),
-  ('Rose Crochet Handbag', 350, 'bags', 'Rose Gold, Cream Gold', 'New In', '', 2),
-  ('Green Chunky Crochet Bag', 220, 'bags', 'Green, Blue', '', '', 3),
-  ('Blue Flower Crochet Top', 180, 'tops', 'Royal Blue, Crimson', 'Fan Favourite', '', 4),
-  ('Cowrie Shell Crochet Top', 200, 'tops', 'Natural, Red', '', '', 5),
+  ('Pink Crochet Chain Bag', 250, 'bags', 'Pink, Green, Yellow, Denim', 'Best Seller', '', 1),
+  ('Rose Crochet Handbag', 350, 'bags', 'Taupe, Cream', 'New In', '', 2),
+  ('Chunky Mini Crochet Bag', 220, 'bags', 'Pink, Green, Yellow, Denim', '', '', 3),
+  ('Blue Flower Crochet Top', 180, 'tops', 'Royal Blue, Magenta, Natural', 'Fan Favourite', '', 4),
+  ('Cowrie Shell Crochet Top', 200, 'tops', 'Natural, Shell accent', '', '', 5),
   ('Crochet Bucket Hat', 160, 'hats', 'Tan, Black, Lavender, Blue, Pink, Cream', '6 Colours', '', 6),
-  ('Pearl Pin Beanie', 140, 'winter', 'Yellow, Blue, Green, Brown', '4 Colours', '', 7)
+  ('Pearl Pin Beanie', 140, 'winter', 'Yellow, Sky Blue, Green, Chocolate', '4 Colours', '', 7)
 ) as v(name, price, cat, colours, badge, image_url, sort_order)
 where not exists (select 1 from public.products limit 1);
 
