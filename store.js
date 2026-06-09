@@ -157,6 +157,9 @@ function ensureProductsSeed() {
   if (storageGet(YI_KEYS.products) == null) {
     storageSet(YI_KEYS.products, JSON.stringify(DEFAULT_PRODUCTS));
   }
+  if (storageGet(YI_KEYS.wa) == null && getConfiguredWA() !== '27000000000') {
+    storageSet(YI_KEYS.wa, getConfiguredWA());
+  }
 }
 
 function getProducts() {
@@ -279,9 +282,21 @@ function savePhotos(photos) {
   return storageSet(YI_KEYS.photos, JSON.stringify(photos));
 }
 
+function getConfiguredWA() {
+  if (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.whatsapp) {
+    const digits = String(SITE_CONFIG.whatsapp).replace(/\D/g, '');
+    if (digits.length >= 10 && digits !== '27000000000') return digits;
+  }
+  return '27000000000';
+}
+
 function getWA() {
-  const raw = storageGet(YI_KEYS.wa) || '27000000000';
-  return String(raw).replace(/\D/g, '') || '27000000000';
+  const stored = storageGet(YI_KEYS.wa);
+  if (stored) {
+    const digits = String(stored).replace(/\D/g, '');
+    if (digits.length >= 10) return digits;
+  }
+  return getConfiguredWA();
 }
 
 function setWA(number) {

@@ -4,6 +4,9 @@
  * Floating shop cards: edit FLOATING_PRODUCT_KEYS in shop.js
  */
 const SITE_CONFIG = {
+  /* UPDATE: Studio WhatsApp with country code, digits only (e.g. 27731234567) */
+  whatsapp: '',
+
   /* UPDATE: Social profile URLs */
   social: {
     instagram: '#',
