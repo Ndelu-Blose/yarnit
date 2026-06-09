@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/images/logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
 
@@ -60,7 +60,7 @@
       <h2 class="section-title">What we make</h2>
       <p class="section-sub">Choose your piece, then message us for colours and availability.</p>
     </div>
-    <div class="category-grid fade-in reveal-stagger" id="catGrid"></div>
+    <div class="category-grid category-gallery fade-in reveal-stagger" id="catGrid"></div>
   </div>
 </section>
 
@@ -284,7 +284,9 @@
       <div class="product-modal-body">
         <p class="eyebrow" id="productModalCategory"></p>
         <h2 class="product-modal-title" id="productModalTitle"></h2>
+        <p class="product-modal-badge" id="productModalBadge" hidden></p>
         <p class="product-modal-price" id="productModalPrice"></p>
+        <p class="product-modal-catalogue-note" id="productModalCatalogueNote" hidden></p>
         <p class="product-modal-status" id="productModalStatus">Made to order · Handmade in Durban</p>
         <p class="product-modal-colours" id="productModalColours"></p>
         <p class="product-modal-desc" id="productModalDesc"></p>
@@ -326,7 +328,7 @@
 <script src="supabase-client.js"></script>
 <script src="supabase-data.js"></script>
 <script src="config.js?v=10"></script>
-<script src="store.js?v=10"></script>
-<script src="shop.js?v=13"></script>
+<script src="store.js?v=15"></script>
+<script src="shop.js?v=15"></script>
 </body>
 </html>

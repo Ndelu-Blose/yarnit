@@ -1,5 +1,5 @@
 /** Shared Yarn It! store — localStorage demo or Supabase when configured. */
-const CATALOGUE_VERSION = 2;
+const CATALOGUE_VERSION = 3;
 
 const YI_KEYS = {
   products: 'yi_products',
@@ -13,13 +13,82 @@ const YI_KEYS = {
 const YI_CATEGORIES = ['bags', 'tops', 'hats', 'winter', 'custom'];
 
 const DEFAULT_PRODUCTS = [
-  { id: 1, name: 'Pink Crochet Chain Bag', price: 250, cat: 'bags', colours: 'Pink, Green, Yellow, Denim', badge: 'Best Seller', img: 'category-bags.jpg' },
-  { id: 2, name: 'Rose Crochet Handbag', price: 350, cat: 'bags', colours: 'Taupe, Cream', badge: 'New In', img: 'product-rose-handbag.jpg' },
-  { id: 3, name: 'Chunky Mini Crochet Bag', price: 220, cat: 'bags', colours: 'Pink, Green, Yellow, Denim', badge: '', img: 'category-bags.jpg' },
-  { id: 4, name: 'Blue Flower Crochet Top', price: 180, cat: 'tops', colours: 'Royal Blue, Magenta, Natural', badge: 'Fan Favourite', img: 'category-tops.jpg' },
-  { id: 5, name: 'Cowrie Shell Crochet Top', price: 200, cat: 'tops', colours: 'Natural, Shell accent', badge: '', img: 'category-tops.jpg' },
-  { id: 6, name: 'Crochet Bucket Hat', price: 160, cat: 'hats', colours: 'Tan, Black, Lavender, Blue, Pink, Cream', badge: '6 Colours', img: 'category-hats.jpg' },
-  { id: 7, name: 'Pearl Pin Beanie', price: 140, cat: 'winter', colours: 'Yellow, Sky Blue, Green, Chocolate', badge: '4 Colours', img: 'category-winter.jpg' },
+  {
+    id: 1,
+    name: 'Pink Crochet Chain Bag',
+    price: 250,
+    cat: 'bags',
+    colours: 'Pink, Green, Yellow, Denim',
+    badge: 'Best Seller',
+    img: 'category-bags.jpg',
+    blurb:
+      'Compact chain-strap mini bag, handmade to order. The studio photo shows colourways available in this style — message us for your preferred shade.',
+  },
+  {
+    id: 2,
+    name: 'Rose Crochet Handbag',
+    price: 350,
+    cat: 'bags',
+    colours: 'Taupe, Cream',
+    badge: 'New In',
+    img: 'product-rose-handbag.jpg',
+    blurb: 'Circular crochet handbag with a soft structured shape. Available in taupe and cream, finished by hand in our Durban studio.',
+  },
+  {
+    id: 3,
+    name: 'Chunky Mini Crochet Bag',
+    price: 220,
+    cat: 'bags',
+    colours: 'Pink, Green, Yellow, Denim',
+    badge: '',
+    img: 'category-bags.jpg',
+    blurb:
+      'Small chunky crochet bag with a neat, everyday profile. Photo shows the colour range for this piece — each bag is made to your chosen colour.',
+  },
+  {
+    id: 4,
+    name: 'Blue Flower Crochet Top',
+    price: 180,
+    cat: 'tops',
+    colours: 'Royal Blue, Magenta, Natural',
+    badge: 'Fan Favourite',
+    img: 'category-tops.jpg',
+    blurb:
+      'Floral crochet bikini-style top with a confident summer feel. Studio image shows styles in the collection — enquire for your size and colour.',
+  },
+  {
+    id: 5,
+    name: 'Cowrie Shell Crochet Top',
+    price: 200,
+    cat: 'tops',
+    colours: 'Natural, Shell accent',
+    badge: '',
+    img: 'category-tops.jpg',
+    blurb:
+      'Natural-toned crochet top with cowrie shell detailing. Made to order; photo illustrates the range — we confirm exact colour and fit on WhatsApp.',
+  },
+  {
+    id: 6,
+    name: 'Crochet Bucket Hat',
+    price: 160,
+    cat: 'hats',
+    colours: 'Tan, Black, Lavender, Blue, Pink, Cream',
+    badge: '6 Colours',
+    img: 'category-hats.jpg',
+    blurb:
+      'Open-weave bucket hat in six seasonal colours. Lightweight, wearable, and handmade — choose your colour when you enquire.',
+  },
+  {
+    id: 7,
+    name: 'Pearl Pin Beanie',
+    price: 140,
+    cat: 'winter',
+    colours: 'Yellow, Sky Blue, Green, Chocolate',
+    badge: '4 Colours',
+    img: 'category-winter.jpg',
+    blurb:
+      'Cozy crochet beanie with pearl-pin detail. Available in four classic shades — made to order for a comfortable winter fit.',
+  },
 ];
 
 const DEFAULT_IMG_BY_ID = Object.fromEntries(DEFAULT_PRODUCTS.map((p) => [p.id, p.img]));
@@ -155,12 +224,40 @@ function setProductsCache(products) {
   _productsCache = Array.isArray(products) ? products.map((p) => ({ ...p })) : [];
 }
 
+function mergeCatalogueDefaults(products) {
+  const byId = Object.fromEntries(DEFAULT_PRODUCTS.map((p) => [p.id, p]));
+  const list = Array.isArray(products) && products.length ? products : DEFAULT_PRODUCTS.map((p) => ({ ...p }));
+  return list.map((p) => {
+    const def = byId[p.id];
+    if (!def) return p;
+    return {
+      ...p,
+      blurb: p.blurb || def.blurb || '',
+      colours: p.colours || def.colours,
+      badge: p.badge != null && p.badge !== '' ? p.badge : def.badge,
+      img: hasValidImage(p.img) ? p.img : def.img,
+    };
+  });
+}
+
 function migrateLocalCatalogue() {
   if (isSupabaseMode()) return;
   const storedVersion = parseInt(storageGet(YI_KEYS.catalogueVersion) || '0', 10);
   if (storedVersion >= CATALOGUE_VERSION) return;
 
-  storageSet(YI_KEYS.products, JSON.stringify(DEFAULT_PRODUCTS));
+  let products = null;
+  try {
+    const raw = storageGet(YI_KEYS.products);
+    if (raw) products = JSON.parse(raw);
+  } catch (e) {
+    products = null;
+  }
+
+  if (storedVersion < 2) {
+    storageSet(YI_KEYS.products, JSON.stringify(DEFAULT_PRODUCTS));
+  } else {
+    storageSet(YI_KEYS.products, JSON.stringify(mergeCatalogueDefaults(products)));
+  }
   storageSet(YI_KEYS.catalogueVersion, String(CATALOGUE_VERSION));
   _productsCache = null;
 

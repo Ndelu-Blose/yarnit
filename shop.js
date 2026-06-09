@@ -59,11 +59,17 @@ function productWaMessage(p, prefix) {
 }
 
 function productDescription(p) {
+  if (p.blurb) return p.blurb;
   const colours = colourLabel(p.colours);
   let text = 'Handmade to order in our Durban studio.';
   if (colours) text += ' Available in ' + colours + '.';
   else text += ' Custom colours available on request.';
   return text;
+}
+
+function cataloguePhotoNote(p) {
+  if (!usesCataloguePhoto(p)) return '';
+  return 'Studio photo shows colour options for this style. Your piece is made to order.';
 }
 
 function availabilityLabel() {
@@ -176,7 +182,11 @@ function renderHeroEditorial() {
   const priceText = copy.priceHtml.replace(/<[^>]+>/g, '').trim();
   art.innerHTML =
     heroEditorialImageHtml(featured.img, featured.name) +
-    '<div class="hero-mini-card">' +
+    '<button type="button" class="hero-mini-card hero-open" data-product-id="' +
+    featured.id +
+    '" aria-label="View ' +
+    escapeHtml(copy.title) +
+    '">' +
     '<span class="hero-mini-eyebrow">' +
     escapeHtml(copy.tag) +
     '</span>' +
@@ -186,7 +196,8 @@ function renderHeroEditorial() {
     '<p class="hero-mini-price">' +
     escapeHtml(priceText) +
     '</p>' +
-    '</div>';
+    '<span class="hero-mini-cta">View piece</span>' +
+    '</button>';
 }
 
 function categoryCardImageSrc(catId) {
@@ -225,7 +236,7 @@ function renderCategoryCards() {
 
   grid.innerHTML = CATEGORIES.map((c, i) => {
     const num = String(i + 1).padStart(2, '0');
-    const sizeClass = c.id === 'bags' ? ' category-large' : c.id === 'custom' ? ' category-wide' : '';
+    const sizeClass = c.id === 'custom' ? ' category-wide' : '';
     const src = categoryCardImageSrc(c.id);
     const imgTag = src
       ? '<img src="' + src.replace(/"/g, '&quot;') + '" alt="' + escapeHtml(c.title) + '" loading="lazy" decoding="async">'
@@ -265,6 +276,18 @@ function renderCategoryCards() {
         go();
       }
     });
+    card.addEventListener(
+      'touchstart',
+      function () {
+        card.classList.add('is-revealed');
+      },
+      { passive: true }
+    );
+    card.addEventListener('touchend', function () {
+      window.setTimeout(function () {
+        card.classList.remove('is-revealed');
+      }, 450);
+    });
   });
 }
 
@@ -272,6 +295,10 @@ function renderStandardProductCard(p) {
   const colours = colourLabel(p.colours);
   const catalogue = usesCataloguePhoto(p);
   const frame = renderMediaFrame(p.img, p.name);
+  const badgeHtml = p.badge
+    ? '<span class="product-badge">' + escapeHtml(p.badge) + '</span>'
+    : '';
+  const catalogueChip = catalogue ? '<span class="catalogue-chip">Colour range</span>' : '';
   return (
     '<article class="product-card boutique-card reveal-item" data-cat="' +
     escapeHtml(p.cat) +
@@ -286,6 +313,8 @@ function renderStandardProductCard(p) {
     '<div class="product-img-wrap standard-img-wrap' +
     (catalogue ? ' is-catalogue' : '') +
     '">' +
+    catalogueChip +
+    badgeHtml +
     frame +
     '</div>' +
     '<div class="product-info">' +
@@ -646,6 +675,24 @@ function openProductModal(id) {
   document.getElementById('productModalColours').textContent = colours ? 'Colours: ' + colours : '';
   document.getElementById('productModalDesc').textContent = productDescription(p);
 
+  const catalogueNote = document.getElementById('productModalCatalogueNote');
+  const noteText = cataloguePhotoNote(p);
+  if (catalogueNote) {
+    catalogueNote.textContent = noteText;
+    catalogueNote.hidden = !noteText;
+  }
+
+  const modalBadge = document.getElementById('productModalBadge');
+  if (modalBadge) {
+    if (p.badge) {
+      modalBadge.textContent = p.badge;
+      modalBadge.hidden = false;
+    } else {
+      modalBadge.textContent = '';
+      modalBadge.hidden = true;
+    }
+  }
+
   if (img) {
     if (resolved) {
       img.src = resolved;
@@ -725,6 +772,17 @@ function initProductInteractions() {
     shop.dataset.shopBound = '1';
     shop.addEventListener('click', function (e) {
       const btn = e.target.closest('.product-open');
+      if (!btn) return;
+      const id = btn.getAttribute('data-product-id');
+      if (id) openProductModal(id);
+    });
+  }
+
+  const hero = document.getElementById('home');
+  if (hero && !hero.dataset.heroBound) {
+    hero.dataset.heroBound = '1';
+    hero.addEventListener('click', function (e) {
+      const btn = e.target.closest('.hero-open');
       if (!btn) return;
       const id = btn.getAttribute('data-product-id');
       if (id) openProductModal(id);
