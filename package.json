@@ -7,7 +7,8 @@
     "prepare": "node scripts/install-git-hooks.js",
     "dev": "vite",
     "build:enhance": "vite build",
-    "build": "vite build"
+    "build": "vite build",
+    "vercel-build": "npm run build && node scripts/prepare-vercel-public.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
