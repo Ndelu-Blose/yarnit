@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/images/logo.png" type="image/png">
-  <link rel="stylesheet" href="styles.css?v=20">
-  <link rel="stylesheet" href="dist/enhance-enhance.css?v=18">
+  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="dist/enhance-enhance.css?v=21">
 </head>
 <body class="logo-intro-pending">
 
@@ -39,14 +39,17 @@
       <span class="nav-logo-text">Yarn It!</span>
       <span class="nav-logo-tag">With love</span>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="#products">Shop</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#custom">Custom Orders</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li class="nav-mobile-wa">
+        <a class="nav-links-wa wa-link" data-wa-msg="Hi Yarn It! I'd love to place an order." href="#">Order on WhatsApp</a>
+      </li>
     </ul>
     <a class="nav-cta wa-link" data-wa-msg="Hi Yarn It! I'd love to place an order." href="#">Order on WhatsApp</a>
-    <button class="hamburger" type="button" aria-label="Open menu">
+    <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -383,7 +386,7 @@
 <script src="supabase-data.js"></script>
 <script src="config.js?v=10"></script>
 <script src="store.js?v=18"></script>
-<script src="shop.js?v=20"></script>
-<script type="module" src="dist/enhance.js?v=20"></script>
+<script src="shop.js?v=21"></script>
+<script type="module" src="dist/enhance.js?v=21"></script>
 </body>
 </html>

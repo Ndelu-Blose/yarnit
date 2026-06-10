@@ -1322,7 +1322,32 @@ function initNav() {
   const btn = document.querySelector('.hamburger');
   const links = document.querySelector('.nav-links');
   if (!btn || !links) return;
-  btn.addEventListener('click', () => links.classList.toggle('is-open'));
+
+  function setNavOpen(open) {
+    links.classList.toggle('is-open', open);
+    btn.classList.toggle('is-active', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.classList.toggle('nav-open', open);
+  }
+
+  btn.addEventListener('click', () => setNavOpen(!links.classList.contains('is-open')));
+
+  links.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', () => setNavOpen(false));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setNavOpen(false);
+  });
+
+  window.addEventListener(
+    'resize',
+    () => {
+      if (window.innerWidth > 860) setNavOpen(false);
+    },
+    { passive: true }
+  );
 }
 
 let scrollRevealObserver;

@@ -113,12 +113,13 @@ export default function ProductShop() {
               modules={[Navigation, Pagination, A11y]}
               navigation
               pagination={{ clickable: true }}
-              slidesPerView={1.15}
-              spaceBetween={16}
+              slidesPerView={1.05}
+              spaceBetween={12}
               breakpoints={{
-                640: { slidesPerView: 2.1, spaceBetween: 18 },
-                900: { slidesPerView: 3.1, spaceBetween: 20 },
-                1100: { slidesPerView: 3.35, spaceBetween: 20 },
+                480: { slidesPerView: 1.2, spaceBetween: 14 },
+                640: { slidesPerView: 1.75, spaceBetween: 16 },
+                900: { slidesPerView: 2.15, spaceBetween: 18 },
+                1200: { slidesPerView: 2.65, spaceBetween: 20 },
               }}
               className="react-shop-swiper"
             >
